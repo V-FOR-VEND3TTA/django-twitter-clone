@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Tweet Details{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <p>{{ tweet.content }}</p>
+                    <small class="text-muted">Posted by {{ tweet.user.username }} on {{ tweet.created_at }}</small>
+                </div>
+            </div>
+
+            <!-- Add logic for updating/deleting tweet if the current user is the owner -->
+            {% if tweet.user == request.user %}
+            <div class="mt-3">
+                <a href="{% url 'update_tweet' tweet.id %}" class="btn btn-secondary">Edit</a>
+                <a href="{% url 'delete_tweet' tweet.id %}" class="btn btn-danger">Delete</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
