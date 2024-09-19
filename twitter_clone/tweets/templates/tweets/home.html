@@ -1,12 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Homepage</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <h1>Homepage</h1>    
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home - Twitter Clone{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-8">
+            <h2>Home Feed</h2>
+            <hr>
+            
+            <!-- Create new tweet form (if authenticated) -->
+            {% if user.is_authenticated %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <form method="POST" action="{% url 'create_tweet' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea class="form-control" id="tweetContent" name="content" rows="3" placeholder="What's happening?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Tweet</button>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Display tweets -->
+            {% for tweet in page_obj %}
+            <div class="card mb-3">
+                <div class="card-body">
+                    <p>{{ tweet.content }}</p>
+                    <small class="text-muted">Posted by {{ tweet.user.username }} on {{ tweet.created_at }}</small>
+                </div>
+            </div>
+            {% endfor %}
+
+            <!-- Pagination controls -->
+            <nav>
+                <ul class="pagination justify-content-center">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+{% endblock %}
